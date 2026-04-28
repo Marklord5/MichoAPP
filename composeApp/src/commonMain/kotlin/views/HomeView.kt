@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -18,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +43,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
@@ -92,10 +95,11 @@ fun ContentHomeView(modifier: Modifier) {
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier
-            .pointerInput(key1 = Unit){
-                detectTapGestures {  }
-                focusManager.clearFocus()
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
             }
     ) {
         MainCard("Ingrese el total de la cuenta") {
@@ -108,7 +112,14 @@ fun ContentHomeView(modifier: Modifier) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Monto") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                shape = RoundedCornerShape(percent = 50),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
                 visualTransformation = CurrencyVisualTransformation()
             )
             Row(
@@ -119,7 +130,11 @@ fun ContentHomeView(modifier: Modifier) {
                     FilterChip(
                         selected = selectedTip == option,
                         onClick = { selectedTip = option },
-                        label = { Text(text = "$option%") }
+                        label = { Text(text = "$option%") },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     )
                 }
 
@@ -192,7 +207,7 @@ fun ContentHomeView(modifier: Modifier) {
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = "aplicacion desarrollada por Marquillo el pillo",
+            text = "aplicacion desarrollada por Melany Castañeda",
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
